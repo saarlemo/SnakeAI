@@ -42,5 +42,5 @@ The file ```main.m``` contains a section, where the most competent agent of the 
 -
 
 ## Citations
-[1] [https://www.youtube.com/watch?v=vhiO4WsHA6c](https://www.youtube.com/watch?v=vhiO4WsHA6c)  
+[1] [https://github.com/Chrispresso/SnakeAI](https://github.com/Chrispresso/SnakeAI)  
 [2] A. Sebastianelli, M. Tipaldi, S. L. Ullo and L. Glielmo, "A Deep Q-Learning based approach applied to the Snake game", *2021 29th Mediterranean Conference on Control and Automation (MED)*, PUGLIA, Italy, 2021, pp. 348-353, doi: 10.1109/MED51440.2021.9480232.
