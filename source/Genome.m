@@ -1,7 +1,7 @@
 classdef Genome
     properties
-        architecture % Layer sizes, e.g., [16 100 100 3]
-        weights % Cell array of weight matrices
+        architecture    % The neural network layer sizes, e.g., [16 100 100 3]
+        weights         % Cell array of weight matrices
     end
     methods
         function obj = Genome(architecture, weights)

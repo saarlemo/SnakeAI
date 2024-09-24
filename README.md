@@ -6,4 +6,5 @@
 
 ## To do
 - Option to reward more steps (playtime) for each eaten apple
-- 
+- Comments
+- This readme file

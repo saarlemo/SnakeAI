@@ -49,7 +49,7 @@ classdef MatoPeli
         end
         
         function isOver = isOver(obj)
-            % Check if the game has ended
+            % Check whether the game has ended
             isOver = obj.isGameOver || (obj.stepsTaken >= obj.maxSteps);
         end
         
@@ -83,13 +83,12 @@ classdef MatoPeli
         
         function reward = getReward(obj)
             % Calculate the reward or score for the current state
-            % Reward can be based on the score and survival time
-            reward = 10 * obj.score + obj.stepsTaken * 0.01; % Adjust weighting as needed
+
+            reward = 10 * obj.score + obj.stepsTaken * 0.01;
         end
         
         function state = getState(obj)
             % Get the current state of the game
-            % State can include the snake's head position, direction, food position, etc.
             state.snake = obj.snake;
             state.direction = obj.direction;
             state.food = obj.food;

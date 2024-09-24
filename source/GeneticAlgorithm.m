@@ -1,18 +1,19 @@
 classdef GeneticAlgorithm
     properties
-        gameClass % Handle to the game class
-        agentClass % Handle to the agent class
-        population % Population object
-        param % Parameters
+        gameClass   % Handle to the game class
+        agentClass  % Handle to the agent class
+        population  % Population object
+        param       % Parameters
     end
     methods
         function obj = GeneticAlgorithm(gameClass, agentClass, param)
+            % Constructor for the GeneticAlgorithm class.
+
             obj.gameClass = gameClass;
             obj.agentClass = agentClass;
             obj.param = param;
             obj.population = Population(param);
             if param.plotFitness
-                % Plot
                 f1 = figure(1);
                 scatter([],[])
                 xlim([0 param.generations])
@@ -21,6 +22,8 @@ classdef GeneticAlgorithm
         end
 
         function fitnessScores = evaluateFitness(obj)
+            % Evaluates the fitness scores of the whole population.
+
             numGenomes = length(obj.population.genomes);
             fitnessScores = zeros(1, numGenomes);
             for ii = 1:numGenomes
@@ -30,6 +33,8 @@ classdef GeneticAlgorithm
         end
 
         function fitness = evaluateSingleGenomeFitness(obj, genome)
+            % Evaluates the fitness score of a single genome.
+
             gameInstance = obj.gameClass(obj.param);
             agentInstance = obj.agentClass(genome);
             gameInstance = gameInstance.reset();
@@ -43,6 +48,7 @@ classdef GeneticAlgorithm
 
         function obj = runEvolution(obj)
             % Run the genetic algorithm for a specified number of generations
+
             for gen = 1:obj.param.generations
                 fitnessScores = obj.evaluateFitness();
                 obj.population = obj.population.generateNextGeneration(fitnessScores);
@@ -59,6 +65,8 @@ classdef GeneticAlgorithm
         end
 
         function gen = extractBestGenome(obj)
+            % Returns the genome with best fitness from the population.
+
             fitnessScores = obj.evaluateFitness();
             [~, idx] = max(fitnessScores);
             gen = obj.population.genomes(idx);
@@ -66,6 +74,8 @@ classdef GeneticAlgorithm
         end
 
         function playGenome(obj, genome, playBackSpeed, playbackSteps)
+            % Visualizes the snake game played by the agent with the input genome.
+
             tmpParam = obj.param;
             tmpParam.maxSteps = playbackSteps;
             gameInstance = obj.gameClass(tmpParam);

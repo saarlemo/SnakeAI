@@ -1,10 +1,11 @@
 classdef Population
     properties
         genomes % Cell array of Genome objects
-        param % Parameters
+        param   % Parameters
     end
     methods
         function obj = Population(param)
+            % Constructor for the population class.
             obj.param = param;
             obj.genomes = cell(1, param.populationSize);
             for i = 1:param.populationSize
@@ -12,6 +13,7 @@ classdef Population
             end
         end
         function parents = selectParents(obj, fitnessScores)
+            % Select parents for producing the next generation
             [~, idx] = maxk(fitnessScores, obj.param.topNreproduce);
             parents = cell(1, length(obj.genomes));
             for ii = 1:length(obj.genomes)

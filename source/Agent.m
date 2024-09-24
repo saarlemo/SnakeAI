@@ -1,9 +1,11 @@
 classdef Agent
+    % Agent An agent to play the snake game.
     properties
-        genome % The genome containing the neural network weights
+        genome  % The genome containing the neural network weights
     end
     methods
         function obj = Agent(genome)
+            % Constructor of the class
             obj.genome = genome;
         end
         function action = decideAction(obj, state)
@@ -15,24 +17,11 @@ classdef Agent
         function inputVector = preprocessState(~, state)
             % Preprocess the game state into an input vector of 11 binary values
             
-            % Extract necessary information from the state
-            head = state.snake(end, :);
-            direction = state.direction;
-            food = state.food;
-            gridSize = state.gridSize;
-            snakeBody = state.snake(1:end-1, :); % Exclude head for collision checks
-            % snakeBody = state.snake;
-            % 
-            % % Calculate danger signals
-            % dangerLeft = isDanger(state, turnLeft(direction), head, snakeBody, gridSize);
-            % dangerRight = isDanger(state, turnRight(direction), head, snakeBody, gridSize);
-            % dangerAhead = isDanger(state, direction, head, snakeBody, gridSize);
-            % 
-            % % Moving direction (one-hot encoding)
-            % movingLeft = isequal(direction, [-1, 0]);
-            % movingRight = isequal(direction, [1, 0]);
-            % movingUp = isequal(direction, [0, 1]);
-            % movingDown = isequal(direction, [0, -1]);
+            head = state.snake(end, :);             % Snake head position
+            direction = state.direction;            % Current head direction
+            food = state.food;                      % Food location
+            gridSize = state.gridSize;              % Grid size
+            snakeBody = state.snake(1:end-1, :);    % Exclude head for collision checks
 
             % Precompute possible directions
             leftDir = turnLeft(direction);
@@ -96,23 +85,6 @@ classdef Agent
                 rotationMatrix = [0, 1; -1, 0];
                 newDirection = (rotationMatrix * currentDirection')';
             end
-            
-            % % Function to check for danger in a given direction
-            % function danger = isDanger(state, direction, head, snakeBody, gridSize)
-            %     nextPosition = head + direction;
-            %     % Check wall collision
-            %     if nextPosition(1) < 1 || nextPosition(1) > gridSize(1) || ...
-            %        nextPosition(2) < 1 || nextPosition(2) > gridSize(2)
-            %         danger = 1;
-            %         return;
-            %     end
-            %     % Check self collision
-            %     if ismember(nextPosition, snakeBody, 'rows')
-            %         danger = 1;
-            %         return;
-            %     end
-            %     danger = 0;
-            % end
         end
 
         function outputVector = forwardPass(obj, inputVector)
@@ -128,7 +100,7 @@ classdef Agent
             outputVector = activation;
         end
         function a = activationFunction(~, z)
-            % Example using ReLU activation
+            % ReLU activation function
             a = max(0, z);
         end
         function action = selectAction(~, outputVector)
