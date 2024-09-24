@@ -6,11 +6,11 @@ To train your own neural network, first copy the repository to a local folder. O
 
 ## How it works
 ### Classes
-a. SnakeGame contains the logic of the game, state management and rendering.
-b. Agent represents the AI agent that decides actions based on the game state.
-c. Genome encodes the neural network's weights and architecture.
-d. Population manages a collection of genomes (agents).
-e. GeneticAlgorithm controls the evolutionary process of training AI agents.
+**SnakeGame** contains the logic of the game, state management and rendering.  
+**Agent** represents the AI agent that decides actions based on the game state.  
+**Genome** encodes the neural network's weights and architecture.  
+**Population** manages a collection of genomes (agents).  
+**GeneticAlgorithm** controls the evolutionary process of training AI agents.  
 
 ### Neural network
 The neural network inputs were selected to not depend on the size of the grid. This way a trained neural network can play games on a grid of arbitrary size. In total, there are 11 binary inputs:
