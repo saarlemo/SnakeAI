@@ -36,7 +36,7 @@ classdef GeneticAlgorithm
             % Evaluates the fitness score of a single genome.
 
             gameInstance = obj.gameClass(obj.param);
-            agentInstance = obj.agentClass(genome);
+            agentInstance = obj.agentClass(genome, obj.param);
             gameInstance = gameInstance.reset();
             while ~gameInstance.isOver()
                 state = gameInstance.getState();
@@ -78,8 +78,9 @@ classdef GeneticAlgorithm
 
             tmpParam = obj.param;
             tmpParam.maxSteps = playbackSteps;
+            tmpParam.dropoutRate = 0;
             gameInstance = obj.gameClass(tmpParam);
-            agentInstance = obj.agentClass(genome);
+            agentInstance = obj.agentClass(genome, tmpParam);
             gameInstance = gameInstance.reset();
 
             % Figure handle for rendering

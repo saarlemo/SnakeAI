@@ -2,11 +2,13 @@ classdef Agent
     % Agent An agent to play the snake game.
     properties
         genome  % The genome containing the neural network weights
+        param   % Parameters
     end
     methods
-        function obj = Agent(genome)
+        function obj = Agent(genome, param)
             % Constructor of the class
             obj.genome = genome;
+            obj.param = param;
         end
         function action = decideAction(obj, state)
             % Decide on an action given the current game state using the neural network
@@ -90,12 +92,19 @@ classdef Agent
         function outputVector = forwardPass(obj, inputVector)
             % Forward pass through the neural network
             activation = inputVector;
-            for i = 1:length(obj.genome.weights)
-                weights = obj.genome.weights{i};
+            for ii = 1:length(obj.genome.weights)
+                weights = obj.genome.weights{ii};
                 % Compute weighted sum
                 z = weights * activation;
                 % Apply activation function (e.g., ReLU)
                 activation = obj.activationFunction(z);
+
+                % Apply dropout (hidden layers only)
+                if ii < length(obj.genome.weights)
+                    dropoutMask = rand(size(activation)) > obj.param.dropoutRate;
+                    activation = activation .* dropoutMask;
+                    activation = activation ./ (1 - obj.param.dropoutRate);
+                end
             end
             outputVector = activation;
         end

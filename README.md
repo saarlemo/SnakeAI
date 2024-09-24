@@ -13,4 +13,3 @@
 - Comments
 - This readme file
 - More activation function options
-- Dropout

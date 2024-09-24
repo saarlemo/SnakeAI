@@ -3,11 +3,14 @@ addpath(genpath('source'))
 
 %% Parameters
 % Population parameters
-param.populationSize = 500; % Population size
+param.populationSize = 2000; % Population size
 param.topNreproduce = 4; % Top N genomes by fitness are selected for reproduction
-param.generations = 10; % Number of generations
-param.architecture = [11, 100, 100, 100, 3]; % Neural network architecture
+param.generations = 50; % Number of generations
 param.mutationRate = 0.10; % Mutation rate
+
+% Neural network parameters
+param.architecture = [11, 100, 100, 100, 3]; % Neural network architecture
+param.dropoutRate = 0.2; % Neuron drop out rate
 
 % Game parameters
 param.gridSize = [20 20]; % Playing area size
