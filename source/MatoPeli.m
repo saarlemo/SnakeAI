@@ -12,6 +12,7 @@ classdef MatoPeli
         maxSteps         % Maximum number of steps allowed
         bonusSteps       % Number of steps rewarded for eating an apple
         stepsTaken       % Number of steps taken so far
+        fitnessFun       % Function used to calculate fitness
     end
     
     methods
@@ -29,10 +30,14 @@ classdef MatoPeli
             if ~isfield(param, 'bonusSteps')
                 param.bonusSteps = 0;
             end
+            if ~isfield(param, 'fitnessFun')
+                param.fitnessFun = @(s, a) 10*a + 0.01*s;
+            end
             obj.gridSize = param.gridSize;
             obj.initialLength = param.initialLength;
             obj.maxSteps = param.maxSteps;
             obj.bonusSteps = param.bonusSteps;
+            obj.fitnessFun = param.fitnessFun;
             obj.possibleActions = {'left', 'straight', 'right'};
             obj = obj.reset();
         end
@@ -89,8 +94,9 @@ classdef MatoPeli
         
         function reward = getReward(obj)
             % Calculate the reward or score for the current state
-
-            reward = 10 * obj.score + obj.stepsTaken * 0.01;
+            s = obj.stepsTaken;
+            a = obj.score;
+            reward = obj.fitnessFun(s, a);
         end
         
         function state = getState(obj)
@@ -109,6 +115,7 @@ classdef MatoPeli
             axis([1 obj.gridSize(1)+1 1 obj.gridSize(2)+1]);
             axis square;
             set(gca, 'XTick', 1:obj.gridSize(1)+1, 'YTick', 1:obj.gridSize(2)+1);
+            set(gca, 'XColor', 'none', 'YColor', 'none');
             grid on;
             
             % Draw the snake

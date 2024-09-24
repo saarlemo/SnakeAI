@@ -8,8 +8,12 @@ classdef Population
             % Constructor for the population class.
             obj.param = param;
             obj.genomes = cell(1, param.populationSize);
-            for i = 1:param.populationSize
-                obj.genomes{i} = Genome(obj.param.architecture);
+            for ii = 1:param.populationSize
+                if ~isfield(param, 'initialGenome')
+                    obj.genomes{ii} = Genome(obj.param.architecture);
+                else
+                    obj.genomes{ii} = Genome(obj.param.initialGenome.architecture, obj.param.initialGenome.weights);
+                end
             end
         end
         function parents = selectParents(obj, fitnessScores)

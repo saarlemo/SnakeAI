@@ -13,7 +13,7 @@ classdef GeneticAlgorithm
             obj.agentClass = agentClass;
             obj.param = param;
             obj.population = Population(param);
-            if param.plotFitness
+            if param.plotFitness == 1
                 f1 = figure(1);
                 scatter([],[])
                 xlim([0 param.generations])
@@ -71,6 +71,11 @@ classdef GeneticAlgorithm
             [~, idx] = max(fitnessScores);
             gen = obj.population.genomes(idx);
             gen = gen{1};
+        end
+
+        function saveBestGenome(obj, fname)
+            gen = extractBestGenome(obj);
+            save(fname, 'gen')
         end
 
         function playGenome(obj, genome, playBackSpeed, playbackSteps)
