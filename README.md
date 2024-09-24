@@ -26,7 +26,7 @@ The neural network inputs were selected to not depend on the size of the grid. T
 10. ```1``` if food is to the above the snake's head; else ```0```.
 11. ```1``` if food is to the below the snake's head; else ```0```.
 
-The user can define the architecture freely, provided the input layer has 11 units and the output layer has 3 units. The outputs of each layer are processed through the ReLU activation function with an optional dropout mask being applied as in [2]. Each of the 3 outputs correspond to the possible direction of snake movement.
+The user can define the (feed-forward) architecture freely, provided the input layer has 11 units and the output layer has 3 units. The outputs of each layer are processed through the ReLU activation function with an optional dropout mask being applied as in [2]. Each of the 3 outputs correspond to the possible direction of snake movement.
 
 ### Evolutionary process
 1. **Initialization**: A population of agents (genomes) is created with each one having the pre-defined genome. If no pre-defined genome is supplied, each agent will be assigned a randomly generated one.
