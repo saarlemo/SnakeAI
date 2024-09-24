@@ -10,6 +10,7 @@ classdef MatoPeli
         possibleActions  % Possible actions: 'left', 'straight', 'right'
         score            % Current score
         maxSteps         % Maximum number of steps allowed
+        bonusSteps       % Number of steps rewarded for eating an apple
         stepsTaken       % Number of steps taken so far
     end
     
@@ -17,17 +18,21 @@ classdef MatoPeli
         function obj = MatoPeli(param)
             % Constructor to initialize the game
             if ~isfield(param, 'gridSize')
-                gridSize = [20, 20];
+                param.gridSize = [20, 20];
             end
             if ~isfield(param, 'initialLength')
-                initialLength = 3;
+                param.initialLength = 3;
             end
             if ~isfield(param, 'maxSteps')
-                maxSteps = 500;
+                param.maxSteps = 500;
+            end
+            if ~isfield(param, 'bonusSteps')
+                param.bonusSteps = 0;
             end
             obj.gridSize = param.gridSize;
             obj.initialLength = param.initialLength;
             obj.maxSteps = param.maxSteps;
+            obj.bonusSteps = param.bonusSteps;
             obj.possibleActions = {'left', 'straight', 'right'};
             obj = obj.reset();
         end
@@ -76,6 +81,7 @@ classdef MatoPeli
                 obj.snakeLength = obj.snakeLength + 1;
                 obj.score = obj.score + 1;
                 obj.food = obj.placeFood();
+                obj.maxSteps = obj.maxSteps + obj.bonusSteps;
             end
             
             obj.stepsTaken = obj.stepsTaken + 1;
