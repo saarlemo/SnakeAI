@@ -18,7 +18,7 @@ classdef Genome
             nLayers = length(architecture);
             weights = cell(1, nLayers - 1);
             for ii = 1:nLayers - 1
-                inputSize = architecture(ii);
+                inputSize = architecture(ii) + 1;
                 outputSize = architecture(ii + 1);
                 weights{ii} = randn(outputSize, inputSize) * 0.1;
             end

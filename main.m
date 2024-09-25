@@ -4,9 +4,9 @@ load('initialGenome.mat');
 
 %% Parameters
 % Population parameters
-param.populationSize = 500; % Population size
-param.topNreproduce = 2; % Top N genomes by fitness are selected for reproduction
-param.generations = 10; % Number of generations
+param.populationSize = 1000; % Population size
+param.topNreproduce = 4; % Top N genomes by fitness are selected for reproduction
+param.generations = 75; % Number of generations
 param.mutationRate = 0.10; % Mutation rate
 param.fitnessFun = ... % Fitness function of steps and apples
     @(s, a) log1p(s + (2^a + 500*a^(2.1)) - (a^(1.2)*(0.25*s)^(1.3))); 
@@ -32,9 +32,9 @@ param.plotFitness = 1; % 1=Plot fitness at each generation
 ga = GeneticAlgorithm(@MatoPeli, @Agent, param);
 
 %% Training
-ga = ga.runEvolution();
+ga.runEvolution();
 
-%% Save best genome
+% Save best genome
 ga.saveBestGenome('initialGenome.mat')
 
 %% Playback

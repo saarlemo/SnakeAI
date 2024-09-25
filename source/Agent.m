@@ -91,19 +91,21 @@ classdef Agent
 
         function outputVector = forwardPass(obj, inputVector)
             % Forward pass through the neural network
-            activation = inputVector;
+            activation = [inputVector; 1];
+
             for ii = 1:length(obj.genome.weights)
                 weights = obj.genome.weights{ii};
                 z = weights * activation; % Compute weighted sum
-                activation = obj.activationFunction(z); % Apply activation function
+                activation = [obj.activationFunction(z); 1]; % Apply activation function
                 if ii < length(obj.genome.weights) % Apply dropout (hidden layers only)
                     dropoutMask = rand(size(activation)) > obj.param.dropoutRate;
                     activation = activation .* dropoutMask;
                     activation = activation ./ (1 - obj.param.dropoutRate);
                 end
             end
-            outputVector = activation;
+            outputVector = activation(1:end-1);
         end
+
         function a = activationFunction(obj, z)
             switch obj.param.activationFunction
                 case 'ReLU'

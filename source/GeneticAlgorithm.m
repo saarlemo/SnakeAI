@@ -17,7 +17,11 @@ classdef GeneticAlgorithm
                 f1 = figure(1);
                 scatter([],[])
                 xlim([0 param.generations])
+                xlabel('Generation', 'interpreter', 'latex')
+                ylabel('Fitness', 'interpreter', 'latex')
                 grid on
+                set(f1, 'defaulttextinterpreter', 'latex')
+                set(gca,'TickLabelInterpreter','latex')
             end
         end
 
@@ -50,14 +54,16 @@ classdef GeneticAlgorithm
             % Run the genetic algorithm for a specified number of generations
 
             for gen = 1:obj.param.generations
+                tic
                 fitnessScores = obj.evaluateFitness();
                 obj.population = obj.population.generateNextGeneration(fitnessScores);
-                
+                dt = toc;
+
                 % Optionally, display progress
-                fprintf('Generation %d: Best Fitness = %f\n', gen, max(fitnessScores));
+                fprintf('Generation %d: best fitness = %f, dt = %f s\n', gen, max(fitnessScores), dt);
                 if obj.param.plotFitness
                     hold on;
-                    scatter(gen * ones(size(fitnessScores)), fitnessScores, '.')
+                    scatter(gen * ones(size(fitnessScores)), fitnessScores, '.', 'MarkerEdgeColor', '#0072BD')
                     hold off
                     drawnow
                 end

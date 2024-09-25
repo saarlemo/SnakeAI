@@ -62,7 +62,8 @@ All of the parameters are set in the ```param``` struct. Currently implemented o
 The file ```main.m``` contains a section, where the most competent agent of the last generation can be visualized playing the Snake game.
 
 ## To do
--
+- Structure of readme: the problem with the motivation, methods, results
+- Default parameters (and valid parameter ranges to readme.md)
 
 ## Citations
 [1] [https://github.com/Chrispresso/SnakeAI](https://github.com/Chrispresso/SnakeAI)  
