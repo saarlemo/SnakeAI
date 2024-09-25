@@ -94,13 +94,9 @@ classdef Agent
             activation = inputVector;
             for ii = 1:length(obj.genome.weights)
                 weights = obj.genome.weights{ii};
-                % Compute weighted sum
-                z = weights * activation;
-                % Apply activation function (e.g., ReLU)
-                activation = obj.activationFunction(z);
-
-                % Apply dropout (hidden layers only)
-                if ii < length(obj.genome.weights)
+                z = weights * activation; % Compute weighted sum
+                activation = obj.activationFunction(z); % Apply activation function
+                if ii < length(obj.genome.weights) % Apply dropout (hidden layers only)
                     dropoutMask = rand(size(activation)) > obj.param.dropoutRate;
                     activation = activation .* dropoutMask;
                     activation = activation ./ (1 - obj.param.dropoutRate);
@@ -108,9 +104,23 @@ classdef Agent
             end
             outputVector = activation;
         end
-        function a = activationFunction(~, z)
-            % ReLU activation function
-            a = max(0, z);
+        function a = activationFunction(obj, z)
+            switch obj.param.activationFunction
+                case 'ReLU'
+                    a = max(0, z);
+                case 'step'
+                    a = double(z >= 0);
+                case 'sigmoid'
+                    a = 1 ./ (1 + exp(-z));
+                case 'tanh'
+                    a = tanh(z);
+                case 'softplus'
+                    a = log1p(exp(z));
+                case 'gaussian'
+                    a = exp(-(z.^2));
+                otherwise % Identity activation function
+                    a = z;
+            end
         end
         function action = selectAction(~, outputVector)
             % Select the action based on the neural network's output

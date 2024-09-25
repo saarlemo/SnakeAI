@@ -2,7 +2,7 @@
 SnakeAI leverages a combination of genetic algorithms and fully connected neural networks to evolve intelligent agents capable of playing the classic Snake game.
 
 ## How to install
-To train your own neural network, first copy the repository to a local folder. Open MATLAB (R2024a tested working) and run the file ```main.m```. The file contains explanations for all of the simulation parameters.
+To train your own neural network, first copy the repository to a local folder. Open MATLAB (R2024a tested working) and run the file ```main.m```.
 
 ## How it works
 ### Classes
@@ -34,6 +34,29 @@ The user can define the (feed-forward) architecture freely, provided the input l
 3. **Selection**: $N$ agents with the highest fitness scores are selected as parents for the next generation.
 4. **Crossover and mutation**: The selected parents produce offspring genomes through crossover (combining weights) and mutation (randomly altering weights).
 5. **Iteration**: Steps 2-4 are repeated for a set number of generations, progressively evolving more competent AI agents.
+
+### Parameters
+All of the parameters are set in the ```param``` struct. Currently implemented ones are displayed in the following table:
+| Parameter | Explanation |
+| ------------- | ------------- |
+| **Population parameters** | |
+| `populationSize` | Number of agents playing the game simultaneously |
+| `topNreproduce` | Defines how many agents with the best fitness are selected to reproduce for the next generation |
+| `generations` | The number of generations the simulation is run |
+| `mutationRate` | The chance for a mutation in one neural network weight |
+| `fitnessFun` | The function (of steps and apples) used for determining the fitness of agents (genomes). By default, the function of [1] is used. |
+| **Neural network parameters** | |
+| `architecture` | Neural network architecture as a vector. The first element has to be 11 (inputs) and the last element has to be 3 (outputs). |
+| `dropoutRate` | Chance for neuron dropout |
+| `initialGenome` | The initial genome used to create the population |
+| `activationFunction` | Activation function |
+| **Game parameters** | |
+| `gridSize` | Snake game playing area size as a vector of two elements |
+| `initialLength` | Initial snake length |
+| `maxSteps` | Maximum steps, after which the game will end |
+| `bonusSteps` | Amount of steps rewarded for eating an apple |
+| **Miscellaneous parameters** | |
+| `plotFitness` | Tag to plot agent fitness by each generation |
 
 ### Visualization
 The file ```main.m``` contains a section, where the most competent agent of the last generation can be visualized playing the Snake game.
