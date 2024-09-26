@@ -4,7 +4,7 @@ load('initialGenome.mat');
 
 %% Parameters
 % Population parameters
-param.populationSize = 10; % Population size
+param.populationSize = 1000; % Population size
 param.topNreproduce = 4; % Top N genomes by fitness are selected for reproduction
 param.generations = 75; % Number of generations
 param.mutationRate = 0.10; % Mutation rate
