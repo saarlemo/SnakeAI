@@ -4,7 +4,7 @@ load('initialGenome.mat');
 
 %% Parameters
 % Population parameters
-param.populationSize = 1000; % Population size
+param.populationSize = 10; % Population size
 param.topNreproduce = 4; % Top N genomes by fitness are selected for reproduction
 param.generations = 75; % Number of generations
 param.mutationRate = 0.10; % Mutation rate
@@ -32,7 +32,7 @@ param.plotFitness = 1; % 1=Plot fitness at each generation
 ga = GeneticAlgorithm(@MatoPeli, @Agent, param);
 
 %% Training
-ga.runEvolution();
+ga = ga.runEvolution();
 
 % Save best genome
 ga.saveBestGenome('initialGenome.mat')
@@ -40,5 +40,5 @@ ga.saveBestGenome('initialGenome.mat')
 %% Playback
 playbackSpeed = 0.01;
 playbackSteps = 5000;
-bestGen = ga.extractBestGenome(); % Extract the genome with the best fitness
+% bestGen = ga.extractBestGenome(); % Extract the genome with the best fitness
 ga.playGenome(bestGen, playbackSpeed, playbackSteps) % Play game 
