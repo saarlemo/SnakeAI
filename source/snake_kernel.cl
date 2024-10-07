@@ -43,7 +43,7 @@ inline float activation(float x) {
     return max(0.f, x);
 }
 
-void __kernel fitness_kernel(__global float* weights, __global float* fitness_values, int numGenomes, int numWeights) {
+void __kernel snake_kernel(__global float* weights, __global float* fitness_values, int numGenomes, int numWeights) {
     int gid = get_global_id(0);
 
     int idxOffset = gid * numWeights;
@@ -67,7 +67,7 @@ void __kernel fitness_kernel(__global float* weights, __global float* fitness_va
     int food_x, food_y;
     int steps = 0;
     int alive = 1;
-    float score = 0.0f;
+    int score = 0;
 
     // Initialize snake position at the center
     snake_x[0] = GRID_WIDTH / 2;
@@ -96,7 +96,7 @@ void __kernel fitness_kernel(__global float* weights, __global float* fitness_va
     int* snake_y_global = &snake_y[0];
 
     int currentMaxSteps = MAX_STEPS;
-
+    
     while (alive && steps < currentMaxSteps) {
         // Calculate possible directions
         int left_direction = (direction + 1) % 4;
@@ -133,7 +133,7 @@ void __kernel fitness_kernel(__global float* weights, __global float* fitness_va
                 for (int j = 0; j < HIDDEN_SIZE-1; j++) {
                     sum += hidden[l - 1][j] * weights[idx_w_hidden_hidden + (l - 1) * HIDDEN_SIZE * HIDDEN_SIZE + i * HIDDEN_SIZE + j];
                 }
-                sum += weights[idx_w_hidden_hidden + (l - 1) * HIDDEN_SIZE * HIDDEN_SIZE + (i+1) * HIDDEN_SIZE];
+                sum += weights[idx_w_hidden_hidden + (l - 1) * HIDDEN_SIZE * HIDDEN_SIZE + i * HIDDEN_SIZE + HIDDEN_SIZE-1];
                 hidden[l][i] = activation(sum);
             }
         }
@@ -144,7 +144,7 @@ void __kernel fitness_kernel(__global float* weights, __global float* fitness_va
             for (int j = 0; j < HIDDEN_SIZE-1; j++) {
                 sum += hidden[N_HIDDEN - 1][j] * weights[idx_w_hidden_output + i * HIDDEN_SIZE + j];
             }
-            sum += weights[idx_w_hidden_output + (i+1) * HIDDEN_SIZE];
+            sum += weights[idx_w_hidden_output + i * HIDDEN_SIZE + HIDDEN_SIZE-1];
             outputs[i] = activation(sum);
         }
 
@@ -193,7 +193,7 @@ void __kernel fitness_kernel(__global float* weights, __global float* fitness_va
         if (snake_x[0] == food_x && snake_y[0] == food_y) {
             if (snake_length < MAX_SNAKE_LENGTH)
                 snake_length++;
-            score += 1.0f;
+            score++;
             currentMaxSteps += BONUS_STEPS;
 
             // Place new food

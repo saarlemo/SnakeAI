@@ -1,12 +1,14 @@
 clear;clc
 addpath(genpath('source'))
 mex source/evaluateFitness.c -lOpenCL
+% load('initialWeights.mat')
+
 %% Parameters
 % Population parameters
-param.populationSize = 1024; % Population size
-% param.topNreproduce = 4; % Top N genomes by fitness are selected for reproduction
-param.generations = 2500; % Number of generations
+param.populationSize = 128; % Population size
+param.generations = 1000; % Number of generations
 param.mutationRate = 0.10; % Mutation rate
+% param.initialWeights = bestWeights;
 
 % Neural network parameters
 param.nHiddenLayers = 3; % Neural network architecture
@@ -19,8 +21,9 @@ param.initialLength = 3; % Initial snake length
 param.maxSteps = 500; % Maximum steps in the game
 param.bonusSteps = 100; % Amount of steps rewarded for eating an apple
 
-% Plot fitness scores after each generation
-param.plotFitness = 1;
+% Miscellaneous parameters
+param.plotFitness = 1; % Plot fitness scores after each generation
+param.saveBestWeights = 1;
 
 %% Initialization
 ga = GeneticAlgorithm(param);
