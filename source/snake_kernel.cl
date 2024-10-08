@@ -38,19 +38,6 @@ inline float activation(float x) {
 void __kernel snake_kernel(__global float* weights, __global float* fitness_values, int numGenomes, int numWeights) {
     int gid = get_global_id(0);
 
-    int idxOffset = gid * numWeights;
-
-    // Calculate indices for weight segments
-    int idx = idxOffset; // Beginning index of input-hidden layer weights
-
-    int idx_w_input_hidden = idx;
-
-    idx += INPUT_SIZE * HIDDEN_SIZE;
-    int idx_w_hidden_hidden = idx; // Beginning index of first hidden-hidden layer weights
-
-    idx += (N_HIDDEN - 1) * HIDDEN_SIZE * HIDDEN_SIZE;
-    int idx_w_hidden_output = idx; // Beginning index of hidden-output layer weights
-
     // Initialize game state variables
     int snake_x[MAX_SNAKE_LENGTH];
     int snake_y[MAX_SNAKE_LENGTH];
@@ -80,7 +67,7 @@ void __kernel snake_kernel(__global float* weights, __global float* fitness_valu
 
     // Neural network arrays
     float inputs[INPUT_SIZE];
-    float hidden[N_HIDDEN][HIDDEN_SIZE];
+    float hidden[N_HIDDEN][HIDDEN_SIZE-1];
     float outputs[OUTPUT_SIZE];
 
     // Snake positions are stored in local arrays
@@ -109,34 +96,44 @@ void __kernel snake_kernel(__global float* weights, __global float* fitness_valu
         inputs[11] = 1.0f;
 
         // Forward pass through neural network
-        // First hidden layer
-        for (int i = 0; i < HIDDEN_SIZE; i++) {
+        int idx = gid * numWeights;
+        // First hidden layer:
+        // input is size 12 (12 weights)
+        // output is size HIDDEN_SIZE - 1
+        for (int i = 0; i < HIDDEN_SIZE-1; i++) {
             float sum = 0.0f;
             for (int j = 0; j < INPUT_SIZE; j++) {
-                sum += inputs[j] * weights[idx_w_input_hidden + i * INPUT_SIZE + j];
+                sum += inputs[j] * weights[idx];
+                idx++;
             }
             hidden[0][i] = activation(sum);
         }
+        hidden[0][HIDDEN_SIZE-1] = 1.0f; // Add bias element
 
         // Hidden layers
+        // input is size HIDDEN_SIZE (including 1 bias)
+        // output is size HIDDEN_SIZE (including 1 bias)
         for (int l = 1; l < N_HIDDEN; l++) {
-            for (int i = 0; i < HIDDEN_SIZE; i++) {
+            for (int i = 0; i < HIDDEN_SIZE-1; i++) {
                 float sum = 0.0f;
-                for (int j = 0; j < HIDDEN_SIZE-1; j++) {
-                    sum += hidden[l - 1][j] * weights[idx_w_hidden_hidden + (l - 1) * HIDDEN_SIZE * HIDDEN_SIZE + i * HIDDEN_SIZE + j];
+                for (int j = 0; j < HIDDEN_SIZE; j++) {
+                    sum += hidden[l - 1][j] * weights[idx];
+                    idx++;
                 }
-                sum += weights[idx_w_hidden_hidden + (l - 1) * HIDDEN_SIZE * HIDDEN_SIZE + i * HIDDEN_SIZE + HIDDEN_SIZE-1];
                 hidden[l][i] = activation(sum);
             }
+            hidden[l][HIDDEN_SIZE-1] = 1.0f; // Add bias element
         }
 
         // Output layer
+        // input is size HIDDEN_SIZE (including 1 bias)
+        // output is size 3
         for (int i = 0; i < OUTPUT_SIZE; i++) {
             float sum = 0.0f;
-            for (int j = 0; j < HIDDEN_SIZE-1; j++) {
-                sum += hidden[N_HIDDEN - 1][j] * weights[idx_w_hidden_output + i * HIDDEN_SIZE + j];
+            for (int j = 0; j < HIDDEN_SIZE; j++) {
+                sum += hidden[N_HIDDEN - 1][j] * weights[idx];
+                idx++;
             }
-            sum += weights[idx_w_hidden_output + i * HIDDEN_SIZE + HIDDEN_SIZE-1];
             outputs[i] = activation(sum);
         }
 

@@ -111,7 +111,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
                               "Failed to get OpenCL device.");
         }
     }
-
+#if DEBUG==1
+    printOpenCLDeviceInfo(device);
+#endif
     // Create context and command queue
     cl_context context = clCreateContext(NULL, 1, &device, NULL, NULL, &err);
     const cl_queue_properties properties[] = { 0 };
@@ -188,4 +190,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
     clReleaseCommandQueue(queue);
     clReleaseContext(context);
     mxFree(platforms);
+}
+
+void printOpenCLDeviceInfo(cl_device_id device) {
+    char buffer[1024];
+    clGetDeviceInfo(device, CL_DEVICE_NAME, sizeof(buffer), buffer, NULL);
+    printf("Device: %s\n", buffer);
 }

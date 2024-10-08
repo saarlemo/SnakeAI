@@ -5,19 +5,17 @@ mex('source/evaluateFitness.c', '-lOpenCL', '-outdir', 'source', 'LDFLAGS="\$LDF
 
 %% Parameters
 % Population parameters
-param.populationSize = 64; % Population size
-param.generations = 2500; % Number of generations
-param.mutationRate = 0.05; % Mutation rate
+param.populationSize = 256; % Population size
+param.generations = 150; % Number of generations
+param.mutationRate = 0.1; % Mutation rate
 % param.initialWeights = bestWeights;
 
 % Neural network parameters
 param.nHiddenLayers = 3; % Neural network architecture
 param.hiddenLayerSize = 100; % Hidden layer size
-param.dropoutRate = 0.01; % Neuron drop out rate (optional, default=0)
 
 % Game parameters
 param.gridSize = [20 20]; % Playing area size
-param.initialLength = 3; % Initial snake length
 param.maxSteps = 500; % Maximum steps in the game
 param.bonusSteps = 100; % Amount of steps rewarded for eating an apple
 
