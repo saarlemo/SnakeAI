@@ -1,14 +1,6 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
 // Define constants for neural network and game parameters
-#define INPUT_SIZE 12
-#define HIDDEN_SIZE 100
-#define OUTPUT_SIZE 3
-#define N_HIDDEN 3
-#define GRID_WIDTH 20
-#define GRID_HEIGHT 20
 #define MAX_SNAKE_LENGTH (GRID_WIDTH * GRID_HEIGHT)
-#define MAX_STEPS 500
-#define BONUS_STEPS 100
 
 // Direction vectors: 0 - left, 1 - up, 2 - right, 3 - down
 const int dx[4] = { -1, 0, 1, 0 };

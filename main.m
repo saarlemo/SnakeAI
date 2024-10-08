@@ -1,13 +1,13 @@
 clear;clc
 addpath(genpath('source'))
-mex source/evaluateFitness.c -lOpenCL
+mex('source/evaluateFitness.c', '-lOpenCL', '-outdir', 'source', 'LDFLAGS="\$LDFLAGS -z noexecstack"')
 % load('initialWeights.mat')
 
 %% Parameters
 % Population parameters
-param.populationSize = 128; % Population size
-param.generations = 1000; % Number of generations
-param.mutationRate = 0.10; % Mutation rate
+param.populationSize = 64; % Population size
+param.generations = 2500; % Number of generations
+param.mutationRate = 0.05; % Mutation rate
 % param.initialWeights = bestWeights;
 
 % Neural network parameters
@@ -30,3 +30,6 @@ ga = GeneticAlgorithm(param);
 
 %% Training
 ga = ga.runEvolution();
+
+%% Play
+% snake(bestWeights', architecture)

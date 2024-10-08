@@ -7,14 +7,14 @@
 #else
 #include <CL/cl.h>
 #endif
+#define DEBUG 0
 
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    // Input validation
-    if (nrhs != 1) {
+    if (nrhs != 2) { // Input validation
         mexErrMsgIdAndTxt("MATLAB:evaluateFitness:invalidNumInputs",
-                          "One input matrix is required");
+                          "Two inputs are required");
     }
     if (nlhs != 1) {
         mexErrMsgIdAndTxt("MATLAB:evaluateFitness:invalidNumOutputs",
@@ -22,14 +22,56 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     if (!mxIsSingle(prhs[0])) {
         mexErrMsgIdAndTxt("MATLAB:evaluateFitness:inputNotSingle",
-                          "Input matrix must be of type single.");
+                          "Input weight matrix must be of type single.");
     }
     if (mxIsComplex(prhs[0])) {
         mexErrMsgIdAndTxt("MATLAB:evaluateFitness:inputComplex",
-                          "Input matrix must be real.");
+                          "Input weight matrix must be real.");
     }
 
-    // Get input matrices dimensions
+    if (!mxIsStruct(prhs[1])) {
+        mexErrMsgIdAndTxt("MATLAB:mexFunction:notStruct",
+                          "Second input must be a struct.");
+    }
+
+    /* Get the number of fields in the struct */
+    int numFields = mxGetNumberOfFields(prhs[1]);
+    double optionsData[numFields];
+    for (int i = 0; i < numFields; i++) {
+        mxArray *fieldValue = mxGetFieldByNumber(prhs[1], 0, i);
+        double *data = mxGetPr(fieldValue);
+        optionsData[i] = (double)data[0];
+    }
+
+    #if DEBUG==1
+    mexPrintf("The struct has %d fields.\n", numFields);
+    /* Loop over each field and print its name and value */
+    for (int i = 0; i < numFields; i++) {
+        const char *fieldName = mxGetFieldNameByNumber(prhs[1], i);
+        mexPrintf("Field %d: %s\n", i + 1, fieldName);
+
+        /* Get the field value as an mxArray* */
+        mxArray *fieldValue = mxGetFieldByNumber(prhs[1], 0, i);
+        if (mxIsDouble(fieldValue)) {
+            double *data = mxGetPr(fieldValue);
+            size_t numElements = mxGetNumberOfElements(fieldValue);
+            mexPrintf("Data: ");
+            for (size_t j = 0; j < numElements; j++) {
+                mexPrintf("%f ", data[j]);
+            }
+            mexPrintf("\n");
+        } else {
+            mexPrintf("Field is not of type double.\n");
+        }
+    }
+    #endif
+    
+    // Compiler options
+    size_t optionsBufferSize = 1024;
+    char* compilerOptions = (char*)malloc(optionsBufferSize);
+    snprintf(compilerOptions, optionsBufferSize, "-D INPUT_SIZE=%u -D HIDDEN_SIZE=%u -D OUTPUT_SIZE=%u -D N_HIDDEN=%u -D GRID_WIDTH=%u -D GRID_HEIGHT=%u -D MAX_STEPS=%u -D BONUS_STEPS=%u", (int)optionsData[0], (int)optionsData[1], (int)optionsData[2], (int)optionsData[3], (int)optionsData[4], (int)optionsData[5], (int)optionsData[6], (int)optionsData[7]);
+
+    // Get input matrix dimensions
     mwSize numWeights = mxGetM(prhs[0]);
     mwSize numGenomes = mxGetN(prhs[0]);
     
@@ -72,7 +114,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     // Create context and command queue
     cl_context context = clCreateContext(NULL, 1, &device, NULL, NULL, &err);
-    cl_command_queue queue = clCreateCommandQueue(context, device, 0, &err);
+    const cl_queue_properties properties[] = { 0 };
+    cl_command_queue queue = clCreateCommandQueueWithProperties(context, device, properties, &err);
 
     // Create OpenCL buffers
     //printf("Creating OpenCL buffers ... ");
@@ -100,14 +143,15 @@ void mexFunction(int nlhs, mxArray *plhs[],
     rewind(fp);
     char *programSource = (char *)mxMalloc(programSize + 1);
     programSource[programSize] = '\0';
-    fread(programSource, sizeof(char), programSize, fp);
+    size_t bytesRead = fread(programSource, sizeof(char), programSize, fp);
     fclose(fp);
     //printf("Done\n");
 
     // Build and compile the kernel
     //printf("Building and compiling the kernel ... ");
-    cl_program program = clCreateProgramWithSource(context, 1, &programSource, NULL, &err);
-    err = clBuildProgram(program, 1, &device, NULL, NULL, NULL);
+    const char *source = programSource;
+    cl_program program = clCreateProgramWithSource(context, 1, &source, NULL, &err);
+    err = clBuildProgram(program, 1, &device, compilerOptions, NULL, NULL);
     if (err != CL_SUCCESS)
     {
         // Print build log in case of errors
