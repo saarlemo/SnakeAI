@@ -83,9 +83,9 @@ classdef GeneticAlgorithm
                 fitnessScores = double(fitnessScores);
                 fitnessScores(isnan(fitnessScores)) = 0;
 
-                probs = exp(fitnessScores);
+                probs = exp(fitnessScores - max(fitnessScores));
                 probs = probs ./ sum(probs);
-
+                
                 for ii = 1:numel(fitnessScores)
                     parentIdx = randsample(1:size(population, 2), 2, true, probs);
                     parents(:, ii, 1) = population(:, parentIdx(1));

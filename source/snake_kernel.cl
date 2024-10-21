@@ -37,6 +37,7 @@ inline float activation(float x) {
 
 void __kernel snake_kernel(__global float* weights, __global float* fitness_values, int numGenomes, int numWeights) {
     int gid = get_global_id(0);
+    int idx;
 
     // Initialize game state variables
     int snake_x[MAX_SNAKE_LENGTH];
@@ -96,7 +97,7 @@ void __kernel snake_kernel(__global float* weights, __global float* fitness_valu
         inputs[11] = 1.0f;
 
         // Forward pass through neural network
-        int idx = gid * numWeights;
+        idx = gid * numWeights;
         // First hidden layer:
         // input is size 12 (12 weights)
         // output is size HIDDEN_SIZE - 1

@@ -1,4 +1,4 @@
-function play_snake(weights, architecture)
+function snake(weights, architecture)
     % Constants
     GRID_WIDTH = 20;
     GRID_HEIGHT = 20;
